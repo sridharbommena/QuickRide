@@ -1,0 +1,10 @@
+server:
+  port: 8083
+
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:driverdb
+    username: user
+    password: user123
+

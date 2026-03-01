@@ -7,4 +7,10 @@ spring:
     url: jdbc:h2:mem:driverdb
     username: user
     password: user123
+  application:
+    name: DRIVER-SERVICE
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
 

@@ -16,6 +16,7 @@
         <module>UserService</module>
         <module>DriverService</module>
         <module>DiscoveryService</module>
+        <module>TripService</module>
     </modules>
     <scm>
         <connection/>

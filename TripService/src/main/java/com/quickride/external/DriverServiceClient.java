@@ -1,5 +1,6 @@
 package com.quickride.external;
 
+import com.quickride.config.TripConfig;
 import com.quickride.external.dto.DriverDto;
 import com.quickride.external.exception.DriverNotFoundException;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(name = "DRIVER-SERVICE", path = "api/drivers")
+@FeignClient(name = "DRIVER-SERVICE", path = "api/drivers", configuration = TripConfig.class)
 public interface DriverServiceClient {
     //    PATCH /api/drivers/{id}/availability — toggle a driver's availability (AVAILABLE / BUSY)
     @PatchMapping("{id}/availability")

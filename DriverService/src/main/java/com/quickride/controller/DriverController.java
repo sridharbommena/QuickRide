@@ -18,13 +18,6 @@ public class DriverController {
 
     private final DriverService driverService;
 
-    //  POST /api/drivers — create a driver profile (name, licenseNumber, vehicleNumber)
-    @PostMapping
-    public ResponseEntity<DriverDto> registerRider(@RequestBody DriverProfileCreateRequestDto createRequestDto){
-        DriverDto driverDto = driverService.registerDriver(createRequestDto);
-        return new ResponseEntity<>(driverDto, HttpStatus.CREATED);
-    }
-
 //    POST /api/users/register-driver — registers a new driver (name, email, phone)
     @PostMapping("register-driver")
     public ResponseEntity<DriverDto> registerDriver(@RequestBody DriverProfileCreateRequestDto createRequestDto){

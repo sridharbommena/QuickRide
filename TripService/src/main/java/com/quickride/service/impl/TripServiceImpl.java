@@ -5,6 +5,7 @@ import com.quickride.dto.TripResponseDto;
 import com.quickride.external.DriverServiceClient;
 import com.quickride.external.dto.DriverDto;
 import com.quickride.external.exception.DriverNotFoundException;
+import com.quickride.external.exception.TripNotFoundException;
 import com.quickride.model.TRIP_STATUS;
 import com.quickride.model.Trip;
 import com.quickride.repo.TripRepository;
@@ -33,7 +34,7 @@ public class TripServiceImpl implements TripService {
         Trip savedTrip = tripRepository.save(trip);
 
         //call driver service to get available list of drivers
-        ResponseEntity<List<DriverDto>> allDrivers = driverServiceClient.getAllDrivers();
+        ResponseEntity<List<DriverDto>> allDrivers = driverServiceClient.getAllDrivers();  //TODO: may cause service unavailable
         assert allDrivers.getBody() != null;
         Optional<DriverDto> firstDriver = allDrivers.getBody().stream().findFirst();
 
@@ -44,7 +45,7 @@ public class TripServiceImpl implements TripService {
             savedTrip.setStatus(TRIP_STATUS.ASSIGNED);
 
             //call driver service to update the availability of the driver
-            driverServiceClient.toggleDriverAvailability(firstDriver.get().getId());
+            driverServiceClient.toggleDriverAvailability(firstDriver.get().getId()); //TODO: may get service unavailable & driver not found
 
             //save
             return tripMapper.toDto(tripRepository.save(savedTrip));
@@ -54,20 +55,20 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public TripResponseDto getTripById(Long id) {
+    public TripResponseDto getTripById(Long id) throws TripNotFoundException {
         Optional<Trip> tripOptional = tripRepository.findById(id);
 
         if(tripOptional.isPresent()){
             Trip trip = tripOptional.get();
             return tripMapper.toDto(trip);
+        } else {
+            throw new TripNotFoundException("Trip with id: " + id + " is not found!");
         }
-
-        return null;
     }
 
     @Override
     @Transactional
-    public TripResponseDto updateTripStatus(Long id, TRIP_STATUS tripStatus) throws DriverNotFoundException {
+    public TripResponseDto updateTripStatus(Long id, TRIP_STATUS tripStatus) throws DriverNotFoundException, TripNotFoundException {
         Optional<Trip> tripOptional = tripRepository.findById(id);
 
         if(tripOptional.isPresent()){
@@ -76,13 +77,13 @@ public class TripServiceImpl implements TripService {
 
             if(tripStatus.equals(TRIP_STATUS.COMPLETED)){
                 //make the driver available again
-                ResponseEntity<DriverDto> driverDtoResponseEntity = driverServiceClient.toggleDriverAvailability(trip.getDriverId());
+                driverServiceClient.toggleDriverAvailability(trip.getDriverId());  //TODO: may get service unavailable or Driver Not found
             }
 
             Trip saved = tripRepository.save(trip);
             return tripMapper.toDto(saved);
+        } else {
+            throw new TripNotFoundException("Trip with id: " + id + " is not found!");
         }
-
-        return null;
     }
 }

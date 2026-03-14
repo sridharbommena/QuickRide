@@ -17,6 +17,7 @@
         <module>DriverService</module>
         <module>DiscoveryService</module>
         <module>TripService</module>
+        <module>APIGateway</module>
     </modules>
     <scm>
         <connection/>

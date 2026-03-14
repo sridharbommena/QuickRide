@@ -1,5 +1,7 @@
 package com.quickride.config;
 
+import com.quickride.exception.FeignErrorDecoder;
+import feign.codec.ErrorDecoder;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
@@ -14,5 +16,10 @@ public class TripConfig {
         modelMapper.getConfiguration()
                 .setMatchingStrategy(MatchingStrategies.STRICT);
         return modelMapper;
+    }
+
+    @Bean
+    public ErrorDecoder errorDecoder(){
+        return new FeignErrorDecoder();
     }
 }
